@@ -21,14 +21,20 @@ export default function constroiCard(titulo, descricao, url, imagem) {
 
 async function listaVideos() {
     try {
-    const listaApi = await conectaApi.listaVideos();
-    listaApi.forEach(elemento => lista.appendChild(
-        constroiCard(elemento.titulo, elemento.descricao, elemento.url, elemento.imagem)))
-} catch (error) { 
-    console.error('Erro ao conectar com a API:', error);
-    lista.innerHTML = `<h2 class="mensagem__titulo">Não foi possivel carregar a lista de videos</h2>`
-}
+        console.log('Tentando conectar à API...');
+        const listaApi = await conectaApi.listaVideos();
+        
+        if (!Array.isArray(listaApi)) {
+            throw new Error('A resposta da API não é um array');
+        }
 
+        console.log('Dados recebidos da API:', listaApi);
+        listaApi.forEach(elemento => lista.appendChild(
+            constroiCard(elemento.titulo, elemento.descricao, elemento.url, elemento.imagem)));
+    } catch (error) { 
+        console.error('Erro ao conectar com a API:', error);
+        lista.innerHTML = `<h2 class="mensagem__titulo">Não foi possível carregar a lista de vídeos</h2>`;
+    }
 }
 
 listaVideos();
